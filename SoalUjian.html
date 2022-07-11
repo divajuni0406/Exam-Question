@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        #content {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            width: 30%;
+
+        }
+
+        #labelSoal {
+            border-style: groove;
+            width: 300px;
+            height: 400px;
+            float: right;
+            background-color: antiquewhite;
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+        }
+
+        #labelSoal .span {
+            display: inline-block;
+            color: #444;
+            border: 1px solid #CCC;
+            background: #DDD;
+            box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            vertical-align: middle;
+            max-width: 100px;
+            padding: 5px;
+            margin: 2px;
+            text-align: center;
+        }
+
+        #lableSoal .bright:hover {
+            -webkit-filter: brightness(100%);
+        }
+    </style>
+</head>
+
+<body>
+    <h2 id="timer"></h2>
+    <div id="content">
+        <h2>Jawabalah Soal Di Bawah Ini</h2>
+
+        <p id="soal"></p>
+        <input type="radio" id="A" name="jawaban" onclick="clickJawaban('A')">
+        <label id="soalA"> I have a bike</label><br>
+        <input type="radio" id="B" name="jawaban" onclick="clickJawaban('B')">
+        <label id="soalB"> I have a bike</label><br>
+        <input type="radio" id="C" name="jawaban" onclick="clickJawaban('C')">
+        <label id="soalC"> I have a bike</label><br>
+        <input type="radio" id="D" name="jawaban" onclick="clickJawaban('D')">
+        <label id="soalD"> I have a bike</label><br><br>
+        <br>
+
+        <button type="button" id="button" onclick="myFunction()"></button>
+    </div>
+
+    <div id="labelSoal">
+    </div>
+
+    <script>
+        let urutan = 0;
+        let buttonName = 'Next';
+        let c = 1800;
+        let totalJawabanBenar = 0;
+        let jawabanUser = '';
+        let pertanyaan = [{
+                soal: 'Kapan Hari Kemerdakaan Indonesia ?',
+                kunci: 'B',
+                abjad: [{
+                        huruf: 'A',
+                        jawaban: '18 Agustus 1945'
+                    },
+                    {
+                        huruf: 'B',
+                        jawaban: '17 Agustus 1945'
+                    },
+                    {
+                        huruf: 'C',
+                        jawaban: '11 Agustus 1945'
+                    },
+                    {
+                        huruf: 'D',
+                        jawaban: '19 Agustus 1945'
+                    }
+                ]
+            },
+            {
+                soal: 'Apa kepanjangan dari DPR ?',
+                kunci: 'C',
+                abjad: [{
+                        huruf: 'A',
+                        jawaban: 'Dewan Perwakilan RT'
+                    },
+                    {
+                        huruf: 'B',
+                        jawaban: 'Dewan Pertimbangan Rakyat'
+                    },
+                    {
+                        huruf: 'C',
+                        jawaban: 'Dewan Perwakilan Rakyat'
+                    },
+                    {
+                        huruf: 'D',
+                        jawaban: 'Dewan Pro Rakyat'
+                    }
+                ]
+            },
+            {
+                soal: 'Pada dasarnya berapa tahunkah dalam menempuh pendidikan S1 di Indonesia ?',
+                kunci: 'C',
+                abjad: [{
+                        huruf: 'A',
+                        jawaban: '5 Bulan'
+                    },
+                    {
+                        huruf: 'B',
+                        jawaban: '1 Tahun'
+                    },
+                    {
+                        huruf: 'C',
+                        jawaban: '4 Tahun'
+                    },
+                    {
+                        huruf: 'D',
+                        jawaban: '3 Tahun'
+                    }
+                ]
+            },
+            {
+                soal: 'Berapa sila yang terdapat didalam Pancasila ?',
+                kunci: 'B',
+                abjad: [{
+                        huruf: 'A',
+                        jawaban: '1'
+                    },
+                    {
+                        huruf: 'B',
+                        jawaban: '5'
+                    },
+                    {
+                        huruf: 'C',
+                        jawaban: '2'
+                    },
+                    {
+                        huruf: 'D',
+                        jawaban: '4'
+                    }
+                ]
+            },
+            {
+                soal: 'Sila yang berbunyi "Ketuhanan Yang Maha Esa" adalah sila ke... ?',
+                kunci: 'D',
+                abjad: [{
+                        huruf: 'A',
+                        jawaban: '3'
+                    },
+                    {
+                        huruf: 'B',
+                        jawaban: '4'
+                    },
+                    {
+                        huruf: 'C',
+                        jawaban: '5'
+                    },
+                    {
+                        huruf: 'D',
+                        jawaban: '1'
+                    }
+                ]
+            }
+        ];
+
+        function getDataSoal() {
+            let string = '';
+            for (let i = 0; i < pertanyaan.length; i++) {
+                string += `<span class="span" onclick="soalTest(${i})">No ${i + 1}</span>`
+            }
+
+            document.getElementById('labelSoal').innerHTML = string;
+        }
+        getDataSoal();
+
+        function soalTest(params) {
+            urutan = params;
+            sisaSoal = pertanyaan.length - params;
+            return soal(pertanyaan[urutan])
+        }
+
+        const arr = (arr) => {
+            return arr.sort(() => Math.random() - 0.5);
+        }
+        arr(pertanyaan);
+
+        let sisaSoal = pertanyaan.length;
+
+        function soal(payloadPertanyaan) {
+            if (sisaSoal == 1) {
+                buttonName = 'Cek Nilai'
+            } else {
+                buttonName = 'Next';
+            }
+
+            document.getElementById('button').innerHTML = buttonName;
+            document.getElementById('soal').innerHTML = `${urutan+1}. ${payloadPertanyaan.soal}`;
+
+            payloadPertanyaan.abjad.forEach(function (abjad) {
+                document.getElementById('soal' + abjad.huruf).innerHTML = `${abjad.huruf}. ${abjad.jawaban}`;
+
+            })
+        }
+        soal(pertanyaan[urutan]);
+
+        function cekJawaban(kunci) {
+            if (kunci == jawabanUser) {
+                totalJawabanBenar += 10;
+            }
+        }
+
+        function clickJawaban(jawaban) {
+            jawabanUser = jawaban;
+        }
+
+        function hasil() {
+            let total = (totalJawabanBenar / pertanyaan.length) * 10;
+            if (total == 0) {
+                window.alert('Manusia GOUBBBLLOKKKK');
+            } else {
+                window.alert('nilai anda adalah ' + total);
+            }
+            reset();
+            resetRadio();
+            soal(pertanyaan[urutan]);
+        }
+
+        function reset() {
+            c = 1800;
+            urutan = 0;
+            totalJawabanBenar = 0;
+            sisaSoal = pertanyaan.length;
+        }
+
+
+        function myFunction() {
+            if (jawabanUser == '') {
+                return;
+            }
+
+            if (sisaSoal == 1) {
+                cekJawaban(pertanyaan[urutan].kunci);
+                hasil();
+                return;
+            }
+
+            cekJawaban(pertanyaan[urutan].kunci);
+            urutan++;
+            sisaSoal--;
+            soal(pertanyaan[urutan])
+            resetRadio();
+        }
+
+        function resetRadio() {
+            jawabanUser = '';
+            let Input = document.querySelectorAll('input');
+            Input.forEach((v) => {
+                document.getElementById(`${v.id}`).checked = false;
+            })
+        }
+
+        function countdown() {
+            myTimer = setInterval(myClock, 1000);
+
+            function myClock() {
+                --c
+                var seconds = c % 60; // Seconds that cannot be written in minutes
+                var secondsInMinutes = (c - seconds) / 60; // Gives the seconds that COULD be given in minutes
+                var minutes = secondsInMinutes % 60; // Minutes that cannot be written in hours
+                var hours = (secondsInMinutes - minutes) / 60;
+                // Now in hours, minutes and seconds, you have the time you need.
+                document.getElementById('timer').innerHTML = minutes + "m " + seconds + 's'
+                if (c == 0) {
+                    hasil();
+                    clearInterval(myTimer);
+                }
+            }
+        }
+        countdown();
+    </script>
+
+</body>
+
+</html>
